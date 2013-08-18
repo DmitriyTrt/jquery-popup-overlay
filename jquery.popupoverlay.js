@@ -1,8 +1,8 @@
 /**
  * jQuery Popup Overlay
  *
- * @version 1.4.3
- * @requires jQuery v1.7.1+
+ * @version 1.4.3-1
+ * @requires jQuery v1.2+
  * @link http://vast-eng.github.com/jquery-popup-overlay/
  * @author Ivan Lazarevic, Vladimir Siljkovic, Branko Sekulic, Marko Jankovic
  */
@@ -310,14 +310,14 @@
                 // show popup
                 if (options.fade) {
                     $el.fadeIn(options.fade, function() {
-                        $(document).on('click', blurhandler);
-                        $(document).on('focusin', focushandler);
+                        $(document).bind('click', blurhandler);
+                        $(document).bind('focusin', focushandler);
                     });
                 } else {
                     $el.show();
                     setTimeout(function() {
-                        $(document).on('click', blurhandler);
-                        $(document).on('focusin', focushandler);
+                        $(document).bind('click', blurhandler);
+                        $(document).bind('focusin', focushandler);
                     }, 0);
                 }
 
@@ -438,11 +438,11 @@
 
                 // unbind event for blur when popup closes
                 if (options.blur) {
-                    $(document).off('click', blurhandler);
+                    $(document).unbind('click', blurhandler);
                 }
 
                 if (options.keepfocus) {
-                    $(document).off('focusin', focushandler);
+                    $(document).unbind('focusin', focushandler);
                     // focus opening link on popup close
                     $('.' + el.id + options.opensufix).focus();
                 }
