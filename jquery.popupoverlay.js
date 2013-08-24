@@ -1,7 +1,7 @@
 /**
  * jQuery Popup Overlay
  *
- * @version 1.4.3-1
+ * @version 1.4.3-2
  * @requires jQuery v1.2+
  * @link http://vast-eng.github.com/jquery-popup-overlay/
  * @author Ivan Lazarevic, Vladimir Siljkovic, Branko Sekulic, Marko Jankovic
@@ -183,7 +183,7 @@
                  */
                 if (options.action == 'click') {
                     // open
-                    $(triggerelement).live('click', function(e) {
+                    $(triggerelement).click(function(e) {
                         if ($el.is(':hidden')) {
                             var or = $(this).attr('data-popup-order');
                             dopopup(el, or);
@@ -307,17 +307,43 @@
                 // remember last clicked place
                 lastclicked[el.id] = clickplace;
 
+                /**
+                 * Keep focus inside dialog box
+                 */
+                focushandler = function(e) {
+                  if (!$(e.target).parents().andSelf().is('#' + el.id)) {
+                    $newel.focus();
+                  }
+                };
+
+                /**
+                 * Close popup on blur
+                 */
+                blurhandler = function(e) {
+                  if (!$(e.target).parents().andSelf().is('#' + el.id)) {
+                    hidePopUp(el);
+                  }
+                };
+
                 // show popup
                 if (options.fade) {
                     $el.fadeIn(options.fade, function() {
+                      if (options.blur) {
                         $(document).bind('click', blurhandler);
+                      }
+                      if (options.keepfocus) {
                         $(document).bind('focusin', focushandler);
+                      }
                     });
                 } else {
                     $el.show();
                     setTimeout(function() {
+                      if (options.blur) {
                         $(document).bind('click', blurhandler);
+                      }
+                      if (options.keepfocus) {
                         $(document).bind('focusin', focushandler);
+                      }
                     }, 0);
                 }
 
@@ -334,37 +360,15 @@
                     }
                 }
 
-                /**
-                 * Keep focus inside dialog box
-                 */
                 if (options.keepfocus) {
-
                     // make overlay holder div focusable and focus it
                     $newel.attr('tabindex', -1).focus();
-
-                    focushandler = function(e) {
-                        if (!$(e.target).parents().andSelf().is('#' + el.id)) {
-                            $newel.focus();
-                        }
-                    };
-
                 }
 
                 /**
                  * onOpen Callback
                  */
                 callback(options.onOpen, clickplace);
-
-                /**
-                 * Close popup on blur
-                 */
-                if (options.blur) {
-                    blurhandler = function(e) {
-                        if (!$(e.target).parents().andSelf().is('#' + el.id)) {
-                            hidePopUp(el);
-                        }
-                    };
-                }
 
             };
 
